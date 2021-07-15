@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     binki-facebook-messenger-desktop-notifications
-// @version  1.1
+// @version  1.3
 // @grant    none
 // @author   Nathan Phillip Brink (binki) (@ohnobinki)
 // @homepageURL https://gist.github.com/binki/33b3fc2c7a0d678ffb28d9d3f2039465
@@ -43,6 +43,7 @@
       dict.set(key, {
         image: image,
         elem: threadElement,
+        rank: dict.size,
       });
     }
     return dict;
@@ -55,7 +56,10 @@
     await delayAsync(100);
     const newThreadInfos = getThreadInfos();
     for (const [newThreadKey, newThreadInfo] of newThreadInfos) {
-      if (!lastThreadInfos.has(newThreadKey)) {
+      // If the user resizes the window, more things are loaded. For that reason, ignore anything beyond the first 4 threads
+      // since all new stuff should be mostly up there anyway unless we’re terribly behind which… we don’t really
+      // support anyway, especially since we can’t even tell yet if a conversation is muted.
+      if (newThreadInfo.rank < 4 && !lastThreadInfos.has(newThreadKey)) {
         if (Notification.permission === 'default') await Notification.requestPermission();
         if (Notification.permission !== 'granted') continue;
         const notification = new Notification('Messenger', {
