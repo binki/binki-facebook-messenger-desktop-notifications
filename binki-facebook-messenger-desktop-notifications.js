@@ -7,7 +7,6 @@
 // @include  https://www.messenger.com/*
 // @include  https://messenger.com/*
 // ==/UserScript==
-console.log('hi');
 (async () => {
   // Immediately ask for notification permission if we don’t have it yet and it’s not denied.
   if (Notification.permission === 'default') await Notification.requestPermission();
