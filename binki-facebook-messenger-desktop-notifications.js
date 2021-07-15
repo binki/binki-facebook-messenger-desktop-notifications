@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name     binki-facebook-messenger-desktop-notifications
-// @version  1
+// @version  1.1
 // @grant    none
 // @author   Nathan Phillip Brink (binki) (@ohnobinki)
 // @homepageURL https://gist.github.com/binki/33b3fc2c7a0d678ffb28d9d3f2039465
-// @include  https://www.messenger.com/
-// @include  https://messenger.com/
+// @include  https://www.messenger.com/*
+// @include  https://messenger.com/*
 // ==/UserScript==
+console.log('hi');
 (async () => {
   // Immediately ask for notification permission if we don’t have it yet and it’s not denied.
   if (Notification.permission === 'default') await Notification.requestPermission();
