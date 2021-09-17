@@ -3,7 +3,7 @@
 // @version  1.3
 // @grant    none
 // @author   Nathan Phillip Brink (binki) (@ohnobinki)
-// @homepageURL https://gist.github.com/binki/33b3fc2c7a0d678ffb28d9d3f2039465
+// @homepageURL https://github.com/binki/binki-facebook-messenger-desktop-notifications/
 // @include  https://www.messenger.com/*
 // @include  https://messenger.com/*
 // ==/UserScript==
