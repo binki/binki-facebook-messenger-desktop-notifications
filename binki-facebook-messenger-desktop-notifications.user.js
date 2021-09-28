@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     binki-facebook-messenger-desktop-notifications
-// @version  1.6
+// @version  1.7
 // @grant    none
 // @author   Nathan Phillip Brink (binki) (@ohnobinki)
 // @homepageURL https://github.com/binki/binki-facebook-messenger-desktop-notifications/
@@ -18,7 +18,6 @@
           resolve();
           observer.disconnect();
         }).observe(target, {
-          // Must observe character data to notice when talking to self.
           characterData: true,
           childList: true,
           subtree: true,
@@ -63,6 +62,11 @@
       // support anyway, especially since we can’t even tell yet if a conversation is muted.
       if (newThreadInfo.rank < 4 && !lastThreadInfos.has(newThreadKey)) {
         if (Notification.permission === 'default') await Notification.requestPermission();
+        // Do not notify if the focus is within the document. Note that this will only be true if
+        // a text/input field is selected. This is the behavior that I (binki) wants—other things
+        // like visibility API will tell you that the page is visible even when a different window
+        // is focused.
+        if (document.querySelector('body:focus-within')) continue;
         if (Notification.permission !== 'granted') continue;
         const notification = new Notification('Messenger', {
           body: newThreadKey,
