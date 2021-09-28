@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     binki-facebook-messenger-desktop-notifications
-// @version  1.5
+// @version  1.6
 // @grant    none
 // @author   Nathan Phillip Brink (binki) (@ohnobinki)
 // @homepageURL https://github.com/binki/binki-facebook-messenger-desktop-notifications/
@@ -18,8 +18,10 @@
           resolve();
           observer.disconnect();
         }).observe(target, {
-          subtree: true,
+          // Must observe character data to notice when talking to self.
+          characterData: true,
           childList: true,
+          subtree: true,
         });
       });
     };
