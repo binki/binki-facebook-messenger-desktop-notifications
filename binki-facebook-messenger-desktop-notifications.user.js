@@ -36,10 +36,17 @@
   }
   const getThreadInfos = () => {
     const dict = new Map();
-    for (const threadElement of document.querySelectorAll(`${threadListContainerSelector} div[data-testid=mwthreadlist-item] a > div > div:nth-child(2)`)) {
+    for (const threadElement of document.querySelectorAll(`${threadListContainerSelector} div[data-testid=mwthreadlist-item-open] a > div > div:nth-child(1)`)) {
       const name = threadElement.querySelector('span > span').textContent;
-      const message = threadElement.querySelector('div > div:nth-child(2) div:nth-child(2) > span[dir=auto] span > span').textContent;
-      const image = threadElement.parentElement.querySelector('svg').childNodes[1].childNodes[0].href.baseVal;
+      const message = threadElement.querySelector('div > div:nth-child(2) div[class]:not(:nth-child(1)) > span[dir=auto] > span').textContent;
+      const image = (() => {
+        // Group conversations have multiple images stacked using CSS (rather than SVG).
+        const groupImages = threadElement.parentElement.querySelectorAll('div[role=img] img');
+        // TODO: Make a composite image from all of them (would be so nice x.x).
+        if (groupImages[0]) return groupImages[0].src;
+        // Otherwise, not a group conversation.
+        return threadElement.parentElement.querySelector('svg').childNodes[1].childNodes[0].href.baseVal;
+      })();
       const key = `${name}> ${message}`;
       dict.set(key, {
         image: image,
