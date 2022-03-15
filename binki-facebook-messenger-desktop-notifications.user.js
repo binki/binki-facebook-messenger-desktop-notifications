@@ -37,16 +37,27 @@
   const getThreadInfos = () => {
     const dict = new Map();
     for (const threadElement of document.querySelectorAll(`${threadListContainerSelector} div[data-testid=mwthreadlist-item-open] a > div > div:nth-child(1)`)) {
-      const name = threadElement.querySelector('span > span').textContent;
-      const message = threadElement.querySelector('div > div:nth-child(2) div[class]:not(:nth-child(1)) > span[dir=auto] > span').textContent;
+      const nameElement = threadElement.querySelector('span > span');
+      const messageElement = threadElement.querySelector('div > div:nth-child(2) div[class]:not(:nth-child(1)) > span[dir=auto] > span');
+      // We might be in the middle of a render.
+      if (!nameElement || !messageElement) {
+        console.log(`Unable to find one of nameElement or messageElement. Assuming mid-render.`);
+        continue;
+      }
+      const name = nameElement.textContent;
+      const message = messageElement.textContent;
       const image = (() => {
         // Group conversations have multiple images stacked using CSS (rather than SVG).
         const groupImages = threadElement.parentElement.querySelectorAll('div[role=img] img');
         // TODO: Make a composite image from all of them (would be so nice x.x).
         if (groupImages[0]) return groupImages[0].src;
         // Otherwise, not a group conversation.
-        return threadElement.parentElement.querySelector('svg').childNodes[1].childNodes[0].href.baseVal;
+        return (((threadElement.parentElement.querySelector('svg') || {childNodes: []}).childNodes[1] || {childNodes: []}).childNodes[0] || {href:{}}).href.baseVal;
       })();
+      if (!image) {
+        console.log(`Unable to find image. Assuming mid-render.`);
+        continue;
+      }
       const key = `${name}> ${message}`;
       dict.set(key, {
         image: image,
