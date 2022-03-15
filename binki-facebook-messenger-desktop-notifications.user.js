@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     binki-facebook-messenger-desktop-notifications
-// @version  1.8
+// @version  1.9
 // @grant    none
 // @author   Nathan Phillip Brink (binki) (@ohnobinki)
 // @homepageURL https://github.com/binki/binki-facebook-messenger-desktop-notifications/
