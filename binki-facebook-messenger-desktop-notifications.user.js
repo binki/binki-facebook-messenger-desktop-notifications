@@ -7,31 +7,19 @@
 // @include  https://www.messenger.com/*
 // @include  https://messenger.com/*
 // @require https://github.com/binki/binki-userscript-delay-async/raw/252c301cdbd21eb41fa0227c49cd53dc5a6d1e58/binki-userscript-delay-async.js
+// @require https://github.com/binki/binki-userscript-when-element-changed-async/raw/88cf57674ab8fcaa0e86bdf5209342ec7780739a/binki-userscript-when-element-changed-async.js
 // ==/UserScript==
 (async () => {
   // Immediately ask for notification permission if we don’t have it yet and it’s not denied.
   if (Notification.permission === 'default') await Notification.requestPermission();
   // In case the user denied it but changes their mind later, just run our stuff anyway.
-  const whenMutatedAsync = (() => {
-    return (target) => {
-      return new Promise(resolve => {
-        new MutationObserver((mutations, observer) => {
-          resolve();
-          observer.disconnect();
-        }).observe(target, {
-          characterData: true,
-          childList: true,
-          subtree: true,
-        });
-      });
-    };
-  })();
+
   // Wait for the ThreadListContainer to show up. However, it doesn’t have a proper name
   // these days. So instead we have to find an example of a conversation and then just grab
   // its parent.
   const threadListContainerChildSelector = 'div[data-testid=mwthreadlist-item-open]';
   while (!document.querySelector(threadListContainerChildSelector)) {
-    await whenMutatedAsync(document.body);
+    await whenElementChangedAsync(document.body);
     await delayAsync(100);
   }
   const getThreadInfos = () => {
@@ -70,7 +58,7 @@
   let lastThreadInfos = getThreadInfos();
   const threadListContainer = document.querySelector(threadListContainerChildSelector).parentElement;
   while (true) {
-    await whenMutatedAsync(threadListContainer);
+    await whenElementChangedAsync(threadListContainer);
     // Give a short delay so that other mutations can happen without a handler being installed.
     await delayAsync(100);
     const newThreadInfos = getThreadInfos();
