@@ -6,6 +6,7 @@
 // @homepageURL https://github.com/binki/binki-facebook-messenger-desktop-notifications/
 // @include  https://www.messenger.com/*
 // @include  https://messenger.com/*
+// @require https://github.com/binki/binki-userscript-delay-async/raw/252c301cdbd21eb41fa0227c49cd53dc5a6d1e58/binki-userscript-delay-async.js
 // ==/UserScript==
 (async () => {
   // Immediately ask for notification permission if we don’t have it yet and it’s not denied.
@@ -25,9 +26,6 @@
       });
     };
   })();
-  const delayAsync = (ms) => new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
   // Wait for the ThreadListContainer to show up. However, it doesn’t have a proper name
   // these days. So instead we have to find an example of a conversation and then just grab
   // its parent.
