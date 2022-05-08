@@ -28,15 +28,17 @@
   const delayAsync = (ms) => new Promise(resolve => {
     setTimeout(resolve, ms);
   });
-  // Wait for the ThreadListContainer to show up.
-  const threadListContainerSelector = 'div[data-testid=MWJewelThreadListContainer]';
-  while (!document.querySelector(threadListContainerSelector)) {
+  // Wait for the ThreadListContainer to show up. However, it doesn’t have a proper name
+  // these days. So instead we have to find an example of a conversation and then just grab
+  // its parent.
+  const threadListContainerChildSelector = 'div[data-testid=mwthreadlist-item-open]';
+  while (!document.querySelector(threadListContainerChildSelector)) {
     await whenMutatedAsync(document.body);
     await delayAsync(100);
   }
   const getThreadInfos = () => {
     const dict = new Map();
-    for (const threadElement of document.querySelectorAll(`${threadListContainerSelector} div[data-testid=mwthreadlist-item-open] a > div > div:nth-child(1)`)) {
+    for (const threadElement of document.querySelectorAll(`${threadListContainerChildSelector} a > div > div:nth-child(1)`)) {
       const nameElement = threadElement.querySelector('span > span');
       const messageElement = threadElement.querySelector('div > div:nth-child(2) div[class]:not(:nth-child(1)) > span[dir=auto] > span');
       // We might be in the middle of a render.
@@ -68,7 +70,7 @@
     return dict;
   };
   let lastThreadInfos = getThreadInfos();
-  const threadListContainer = document.querySelector('div[data-testid=MWJewelThreadListContainer]');
+  const threadListContainer = document.querySelector(threadListContainerChildSelector).parentElement;
   while (true) {
     await whenMutatedAsync(threadListContainer);
     // Give a short delay so that other mutations can happen without a handler being installed.
