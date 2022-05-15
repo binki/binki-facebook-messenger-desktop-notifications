@@ -46,10 +46,17 @@
         console.log(`Unable to find image. Assuming mid-render.`);
         continue;
       }
-      const key = `${name}> ${message}`;
+      const statusIconsElement = threadElement.querySelector(':scope > div:nth-child(3) > div > div');
+      if (!statusIconsElement) {
+        console.log('Unable to find statusIconsElement. Assuming mid-render.', threadElement);
+        continue;
+      }
+      const muted = !!statusIconsElement.querySelector(':scope > svg:nth-child(1)');
+      const key = `${muted ? 'm' : ''}/${name}> ${message}`;
       dict.set(key, {
         image: image,
         elem: threadElement,
+        muted,
         rank: dict.size,
       });
     }
@@ -66,7 +73,7 @@
       // If the user resizes the window, more things are loaded. For that reason, ignore anything beyond the first 4 threads
       // since all new stuff should be mostly up there anyway unless we’re terribly behind which… we don’t really
       // support anyway, especially since we can’t even tell yet if a conversation is muted.
-      if (newThreadInfo.rank < 4 && !lastThreadInfos.has(newThreadKey)) {
+      if (newThreadInfo.rank < 4 && !lastThreadInfos.has(newThreadKey) && !newThreadInfo.muted) {
         if (Notification.permission === 'default') await Notification.requestPermission();
         // Do not notify if the focus is within the document. Note that this will only be true if
         // a text/input field is selected. This is the behavior that I (binki) wants—other things
