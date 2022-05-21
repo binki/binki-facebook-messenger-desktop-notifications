@@ -51,7 +51,10 @@
         console.log('Unable to find statusIconsElement. Assuming mid-render.', threadElement);
         continue;
       }
-      const muted = !!statusIconsElement.querySelector(':scope > svg:nth-child(1)');
+      const maybeMuteSvg = statusIconsElement.querySelector(':scope > svg:nth-child(1):not([data-testid=message_delivery_state_sent])');
+      // The “sending” SVG has a title element. The mute one doesn’t. Need this separate check to determine that the
+      // found maybeMuteSvg is indeed a mute SVG.
+      const muted = !!maybeMuteSvg && !maybeMuteSvg.querySelector(':scope > title');
       const text = `${name}> ${message}`;
       const key = `${muted ? 'm' : ''}/${text}`;
       dict.set(key, {
