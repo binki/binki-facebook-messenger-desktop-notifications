@@ -52,12 +52,14 @@
         continue;
       }
       const muted = !!statusIconsElement.querySelector(':scope > svg:nth-child(1)');
-      const key = `${muted ? 'm' : ''}/${name}> ${message}`;
+      const text = `${name}> ${message}`;
+      const key = `${muted ? 'm' : ''}/${text}`;
       dict.set(key, {
         image: image,
         elem: threadElement,
         muted,
         rank: dict.size,
+        text,
       });
     }
     return dict;
@@ -82,7 +84,7 @@
         if (document.querySelector('body:focus-within')) continue;
         if (Notification.permission !== 'granted') continue;
         const notification = new Notification('Messenger', {
-          body: newThreadKey,
+          body: newThreadInfo.text,
           icon: newThreadInfo.image || 'https://static.xx.fbcdn.net/rsrc.php/yQ/r/mPS7QGFKKuf.ico',
         });
         notification.addEventListener('click', () => {
