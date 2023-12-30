@@ -17,7 +17,7 @@
   // Wait for the ThreadListContainer to show up. However, it doesn’t have a proper name
   // these days. So instead we have to find an example of a conversation and then just grab
   // its parent.
-  const threadListContainerChildSelector = 'div[data-testid=mwthreadlist-item-open]';
+  const threadListContainerChildSelector = 'div[id^=":"][id$=":"] > div[aria-label][role]';
   while (!document.querySelector(threadListContainerChildSelector)) {
     await whenElementChangedAsync(document.body);
     await delayAsync(100);
@@ -26,7 +26,7 @@
     const dict = new Map();
     for (const threadElement of document.querySelectorAll(`${threadListContainerChildSelector} a > div > div:nth-child(1)`)) {
       const nameElement = threadElement.querySelector('span > span');
-      const messageElement = threadElement.querySelector('div > div:nth-child(2) div[class]:not(:nth-child(1)) > span[dir=auto] > span');
+      const messageElement = threadElement.querySelector('div > div.html-div > div.html-div:not(:nth-child(1)) > span > span[dir=auto] > span');
       // We might be in the middle of a render.
       if (!nameElement || !messageElement) {
         console.log(`Unable to find one of nameElement or messageElement. Assuming mid-render.`);
@@ -46,12 +46,12 @@
         console.log(`Unable to find image. Assuming mid-render.`);
         continue;
       }
-      const statusIconsElement = threadElement.querySelector(':scope > div:nth-child(3) > div > div');
+      const statusIconsElement = threadElement.querySelector(':scope > div > div:nth-child(3) > div > div');
       if (!statusIconsElement) {
         console.log('Unable to find statusIconsElement. Assuming mid-render.', threadElement);
         continue;
       }
-      const maybeMuteSvg = statusIconsElement.querySelector(':scope > svg:nth-child(1):not([data-testid=message_delivery_state_sent])');
+      const maybeMuteSvg = statusIconsElement.querySelector(':scope > div > svg:nth-child(1):not([data-testid=message_delivery_state_sent])');
       // The “sending” SVG has a title element. The mute one doesn’t. Need this separate check to determine that the
       // found maybeMuteSvg is indeed a mute SVG.
       const muted = !!maybeMuteSvg && !maybeMuteSvg.querySelector(':scope > title');
